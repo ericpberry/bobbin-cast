@@ -1,4 +1,4 @@
-// Bobbin's TV page (SPEC.md C2, C4). Plays each chunk's audio from the phone and draws the text being read with both
+// Page Reader's TV page (SPEC.md C2, C4; the repo and the Cast namespace keep the name bobbin). Plays each chunk's audio from the phone and draws the text being read with both
 // highlight layers, from the page's own audio clock. Messages on urn:x-cast:app.bobbin, mirrored in
 // core/src/main/kotlin/app/bobbin/core/cast/TvMessages.kt:
 //   doc     phone → TV  the item's outline: id, title, site, sections [{title, ms}], speed, next

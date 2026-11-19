@@ -1,8 +1,9 @@
 <!doctype html>
 <!--
-  Bobbin's TV page (SPEC.md C2, C4; Approach › TV protocol). A static page the TV loads when Bobbin casts, published
-  from the private bobbin repo's receiver/ folder to the public ericpberry/bobbin-cast repo (GitHub Pages) by
-  scripts/publish-receiver.sh. The text being read and its timings come from the phone on Bobbin's Cast channel; the
+  Page Reader's TV page (SPEC.md C2, C4; Approach › TV protocol; the Vedi refresh, 2026-11-19). A static page the TV
+  loads when Page Reader casts, published from the private bobbin repo's receiver/ folder to the public
+  ericpberry/bobbin-cast repo (GitHub Pages) by scripts/publish-receiver.sh. The text being read and its timings
+  come from the phone on the app's Cast channel (urn:x-cast:app.bobbin, unchanged); the
   audio comes from the phone over the home network. Nothing else is fetched except Google's Cast receiver library.
   Add ?preview=reading (or idle, paused, end) to see a state in a browser, and &touch=1 to see it as a smart display.
   Structure and Cast handling from Spool's receiver (ericpberry/spool@d33f07b, receiver/); screens drawn to
@@ -12,7 +13,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bobbin</title>
+  <title>Page Reader</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
 </head>
@@ -21,14 +22,14 @@
   <div id="stage" class="stage">
 
     <main id="idle" class="screen idle">
-      <img class="wordmark-big" src="wordmark.svg" alt="bobbin">
-      <p class="hint">Ready to read from Bobbin on your phone</p>
+      <img class="wordmark-big" src="wordmark.svg" alt="Page Reader">
+      <p class="hint">Ready to read from Page Reader on your phone</p>
     </main>
 
     <main id="reading" class="screen reading" hidden>
       <section class="main">
         <header class="top">
-          <img class="wordmark" src="wordmark.svg" alt="bobbin">
+          <img class="wordmark" src="wordmark.svg" alt="Page Reader">
           <span id="speed" class="mono"></span>
         </header>
         <h1 id="title" class="title"></h1>
@@ -38,11 +39,11 @@
         <div id="bar" class="bar"></div>
       </section>
       <aside class="side">
-        <p class="label">CONTENTS</p>
+        <p class="label">Contents</p>
         <div id="contents" class="contents"></div>
         <div class="grow"></div>
         <div id="nextBox" hidden>
-          <p class="label">NEXT IN YOUR LIBRARY</p>
+          <p class="label">Next in your library</p>
           <p id="next" class="next"></p>
         </div>
       </aside>
@@ -55,11 +56,11 @@
     </main>
 
     <main id="end" class="screen end" hidden>
-      <header class="top"><img class="wordmark" src="wordmark.svg" alt="bobbin"></header>
-      <p class="label endlabel">FINISHED</p>
+      <header class="top"><img class="wordmark" src="wordmark.svg" alt="Page Reader"></header>
+      <p class="label endlabel">Finished</p>
       <h1 id="endTitle" class="big"></h1>
       <div id="endNext" hidden>
-        <p class="label">NEXT IN YOUR LIBRARY</p>
+        <p class="label">Next in your library</p>
         <p id="endNextTitle" class="next"></p>
         <p class="hint">Choose it on your phone to keep listening.</p>
       </div>
