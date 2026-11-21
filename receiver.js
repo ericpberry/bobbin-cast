@@ -115,6 +115,9 @@
     }
     if (at < text.length) p.append(text.slice(at));
     for (const [i, d] of [...$("contents").children].entries()) d.classList.toggle("now", i === m.section);
+    // A long Contents scrolls (it is cut at its box): keep the section being read in the middle of what shows.
+    const box = $("contents"), now = box.querySelector(".now");
+    if (now) box.scrollTop = Math.max(0, now.offsetTop - box.offsetTop - (box.clientHeight - now.offsetHeight) / 2);
     if (screen !== "reading") show("reading");
     drawStatus();
   }
@@ -246,9 +249,15 @@
   function preview(state) {
     if (params.get("touch") === "1") document.body.classList.add("touch");
     if (state === "idle") return show("idle");
+    // &sections=N gives a long Contents (a book), &current=K puts the reading there (TvContentsTest, a lab finding).
+    const many = Number(params.get("sections") || 0);
+    const current = Number(params.get("current") || 1);
+    const sections = many > 0
+      ? Array.from({ length: many }, (_, i) => ({ title: `Chapter ${i + 1}: A long chapter title that runs past the column`, ms: 200000 }))
+      : [["Introduction", 140000], ["The memory in the mud", 220000], ["Reading the floodplain", 300000], ["What the maps miss", 180000], ["Letting the river back in", 160000]]
+        .map(([title, ms]) => ({ title, ms }));
     renderDoc({ type: "doc", id: "doc:1", title: "How rivers remember their old paths", site: "harborreview.org", speed: 1.25, next: "Q3 Board Packet",
-      sections: [["Introduction", 140000], ["The memory in the mud", 220000], ["Reading the floodplain", 300000], ["What the maps miss", 180000], ["Letting the river back in", 160000]]
-        .map(([title, ms]) => ({ title, ms })) });
+      sections });
     const a = "These scars are not just history.";
     const b = "Hydrologists call this channel memory, and it is one reason a river can leave its banks where every map looked safe.";
     const text = `${a} ${b}`;
@@ -260,7 +269,7 @@
       ws.push({ start: t, end: t + 340, from, to: from + w.length });
       t += 360;
     }
-    renderChunk({ type: "chunk", id: "doc:1#12", section: 1, text,
+    renderChunk({ type: "chunk", id: "doc:1#12", section: many > 0 ? current : 1, text,
       sentences: [{ start: 0, end: 2400, from: 0, to: a.length }, { start: 2600, end: t, from: a.length + 1, to: text.length }],
       words: ws, progress: { heardMs: 140000 + 99000, totalMs: 1000000 } });
     if (state === "paused") setPaused(true);

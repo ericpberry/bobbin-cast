@@ -51,7 +51,8 @@ body { color: var(--ink); font-family: var(--sans); outline: none; }
 .side { width: 300px; box-sizing: border-box; background: var(--raised); border-left: 1px solid var(--rule); padding: 38px 26px;
   display: flex; flex-direction: column; gap: 12px; }
 .contents { display: flex; flex-direction: column; gap: 10px; overflow: hidden; max-height: 360px; }
-.contents div { display: flex; align-items: center; gap: 10px; font-size: 18px; line-height: 24px; color: var(--secondary);
+/* flex: none: a book's many sections must not squeeze each row below its line (clipped text on the lab TV, Nov 20). */
+.contents div { flex: none; display: flex; align-items: center; gap: 10px; font-size: 18px; line-height: 24px; color: var(--secondary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .contents div::before { content: ""; width: 6px; height: 6px; border-radius: 3px; flex: none; background: transparent; }
 .contents div.now { color: var(--ink); font-weight: 600; }
