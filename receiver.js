@@ -74,7 +74,8 @@
     speed = m.speed || speed;
     $("title").textContent = m.title || "";
     const box = $("contents");
-    box.replaceChildren(...(m.sections || []).map((s) => el("div", null, s.title)));
+    // The words in their own span: a row is a flex box (dot, words), and a flex box draws no ellipsis (run 2026-11-22-rc).
+    box.replaceChildren(...(m.sections || []).map((s) => { const d = el("div"); d.appendChild(el("span", null, s.title)); return d; }));
     $("nextBox").hidden = !m.next;
     $("next").textContent = m.next || "";
     const bar = $("bar");
@@ -122,8 +123,13 @@
     drawStatus();
   }
 
+  /** As the phone says it: 1.0, 1.25, 1.5, 2.0 (the corner read "1." at normal speed: run 2026-11-22-rc). */
+  function speedText(v) {
+    return Number(v).toFixed(2).replace(/(\.\d)0$/, "$1");
+  }
+
   function drawStatus() {
-    $("speed").textContent = `${Number(speed).toFixed(speed % 1 ? 2 : 1).replace(/0$/, "")}×${voicing ? " · voicing…" : ""}`;
+    $("speed").textContent = `${speedText(speed)}×${voicing ? " · voicing…" : ""}`;
   }
 
   /** Every frame: the spoken sentence and word from the page's own audio clock, the meta line, and the bar. */
@@ -256,7 +262,7 @@
       ? Array.from({ length: many }, (_, i) => ({ title: `Chapter ${i + 1}: A long chapter title that runs past the column`, ms: 200000 }))
       : [["Introduction", 140000], ["The memory in the mud", 220000], ["Reading the floodplain", 300000], ["What the maps miss", 180000], ["Letting the river back in", 160000]]
         .map(([title, ms]) => ({ title, ms }));
-    renderDoc({ type: "doc", id: "doc:1", title: "How rivers remember their old paths", site: "harborreview.org", speed: 1.25, next: "Q3 Board Packet",
+    renderDoc({ type: "doc", id: "doc:1", title: "How rivers remember their old paths", site: "harborreview.org", speed: Number(params.get("speed") || 1.25), next: "Q3 Board Packet",
       sections });
     const a = "These scars are not just history.";
     const b = "Hydrologists call this channel memory, and it is one reason a river can leave its banks where every map looked safe.";
